@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Keyword Search</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <div id="container">
+      <form method="POST" action="{{ url_for('search') }}">
+        <input type="text" name="keyword" placeholder="Enter a keyword">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+    {% block content %}{% endblock %}
+  </body>
+</html>
