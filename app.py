@@ -151,4 +151,4 @@ def search():
                            plot_image=plot_image, ma100_plot_image=ma100_plot_image,
                            ma100_ma200_plot_image=ma100_ma200_plot_image,final_plot = final_plot)
 if __name__ == "__main__":
-    app.run(host="0.0.0", port = int("3000"), debug=True)
+    app.run(host='0.0.0.0', port=3000)
