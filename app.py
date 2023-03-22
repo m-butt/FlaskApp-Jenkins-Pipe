@@ -46,7 +46,7 @@ def search():
     fig, ax = plt.subplots(figsize=(12,6))
     ax.plot(ma100,'r')
     ax.plot(data.Close)
-    ax.set_xlabel('Date')
+    ax.set_xlabel('Datess')
     ax.set_ylabel('Price')
     ax.set_title(company + ' (MA100)')
 
