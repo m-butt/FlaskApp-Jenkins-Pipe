@@ -78,8 +78,9 @@ def search():
 
     scaler = MinMaxScaler(feature_range=(0, 1))
     data_training = pd.DataFrame(data['Close'][0:int(len(data)*0.70)])
-    temp = int(len(data)*0.70):int(len(data))
-    data_testing = pd.DataFrame(data['Close'][temp])
+    temp1 = int(len(data)*0.70)
+    temp2 = int(len(data))
+    data_testing = pd.DataFrame(data['Close'][temp1:temp2])
     # data_training_array = scaler.fit_transform(data_training)
 
     model = load_model('keras_model.h5')
