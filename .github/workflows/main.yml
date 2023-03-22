@@ -27,4 +27,3 @@ jobs:
     - name: Lint code
       run: |
         flake8 --exclude=__init__.py .
-
