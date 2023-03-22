@@ -11,40 +11,38 @@ import pandas as pd
 import numpy as np
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("//")
 def home():
     return render_template("index.html")
 
-@app.route("/search", methods=["POST"])
+@app.route("//search", methods=["POST"])
 def search():
     keyword = request.form["keyword"]
     yf.pdr_override()
     company = keyword
 
-    start = dt.datetime(2012,1,1)
-    end = dt.datetime(2020,1,1)
+    start = dt.datetime(2012, 1, 1)
+    end = dt.datetime(2020, 1, 1)
 
-    data = pdr.get_data_yahoo(company, start,end)
+    data = pdr.get_data_yahoo(company, start, end)
     
     # Create first plot
-    fig, ax = plt.subplots(figsize=(12,6))
+    fig, ax = plt.subplots(figsize=(12, 6))
     data['Adj Close'].plot(ax=ax)
     ax.set_xlabel('Date')
     ax.set_ylabel('Price')
     ax.set_title(company)
-    
     # save first plot to bytes buffer
     buffer = io.BytesIO()
     fig.savefig(buffer, format='png')
     buffer.seek(0)
-    
     # encode the first plot image in base64
     plot_image = base64.b64encode(buffer.getvalue()).decode()
 
     # Create second plot
     ma100 = data.Close.rolling(100).mean()
-    fig, ax = plt.subplots(figsize=(12,6))
-    ax.plot(ma100,'r')
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.plot(ma100, 'r')
     ax.plot(data.Close)
     ax.set_xlabel('Date')
     ax.set_ylabel('Price')
@@ -61,9 +59,9 @@ def search():
     # Create third plot
     ma100 = data.Close.rolling(100).mean()
     ma200 = data.Close.rolling(200).mean()
-    fig, ax = plt.subplots(figsize=(12,6))
-    ax.plot(ma100,'r')
-    ax.plot(ma200,'g')
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.plot(ma100, 'r')
+    ax.plot(ma200, 'g')
     ax.plot(data.Close)
     ax.set_xlabel('Date')
     ax.set_ylabel('Price')
@@ -77,21 +75,18 @@ def search():
     # encode the third plot image in base64
     ma100_ma200_plot_image = base64.b64encode(buffer.getvalue()).decode()
 
-    scaler = MinMaxScaler(feature_range = (0,1))
+    scaler = MinMaxScaler(feature_range = (0, 1))
     data_training = pd.DataFrame(data['Close'][0:int(len(data)*0.70)])
-    data_testing = pd.DataFrame(data['Close'][int(len(data)*0.70): int(len(data))])
+    data_testing = pd.DataFrame(data['Close'][int(len(data)*0.70):int(len(data))])
     data_training_array = scaler.fit_transform(data_training)
-
 
     model = load_model('keras_model.h5')
     past_100_days = data_training.tail(100)
     final_df = past_100_days.append(data_testing,ignore_index = True)
     input_data = scaler.fit_transform(final_df)
 
-
     x_test = []
     y_test = []
-
     for i in range(100, input_data.shape[0]):
         x_test.append(input_data[i-100:i])
         y_test.append(input_data[i,0])    
@@ -107,9 +102,9 @@ def search():
 
      # Create fourth plot
 
-    fig, ax = plt.subplots(figsize=(12,6))
-    ax.plot(y_test,'r' , label = 'Original price')
-    ax.plot(y_predict,'g',label = 'Predicted price')
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.plot(y_test, 'r' , label = 'Original price')
+    ax.plot(y_predict, 'g', label = 'Predicted price')
     ax.set_xlabel('Time')
     ax.set_ylabel('Price')
     ax.set_title(' Accuracy of prediction')
@@ -122,14 +117,14 @@ def search():
     # encode the fourth plot image in base64
     final_plot = base64.b64encode(buffer.getvalue()).decode()
 
-    start = dt.datetime(2022,1,1)
+    start = dt.datetime(2022, 1, 1)
     end = dt.datetime.now()
 
     prediction_days = 100
-    test_data = pdr.get_data_yahoo(company, start,end)
+    test_data = pdr.get_data_yahoo(company, start, end)
     actual_price = test_data['Close'].values
 
-    total_dataset = pd.concat((data['Close'],test_data['Close']),axis =0)
+    total_dataset = pd.concat((data['Close'], test_data['Close']), axis =0)
 
 
     scaler = MinMaxScaler(feature_range = (0,1))
@@ -149,6 +144,6 @@ def search():
 
     return render_template("result.html", predict = prediction, keyword=keyword, table_data=data.describe(),
                            plot_image=plot_image, ma100_plot_image=ma100_plot_image,
-                           ma100_ma200_plot_image=ma100_ma200_plot_image,final_plot = final_plot)
+                           ma100_ma200_plot_image=ma100_ma200_plot_image, final_plot = final_plot)
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=3000)
