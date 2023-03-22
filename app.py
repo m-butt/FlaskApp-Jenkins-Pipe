@@ -11,11 +11,11 @@ import pandas as pd
 import numpy as np
 app = Flask(__name__)
 
-@app.route("//")
+@app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("//search", methods=["POST"])
+@app.route("/search", methods=["POST"])
 def search():
     keyword = request.form["keyword"]
     yf.pdr_override()
@@ -25,7 +25,6 @@ def search():
     end = dt.datetime(2020, 1, 1)
 
     data = pdr.get_data_yahoo(company, start, end)
-    
     # Create first plot
     fig, ax = plt.subplots(figsize=(12, 6))
     data['Adj Close'].plot(ax=ax)
@@ -75,10 +74,10 @@ def search():
     # encode the third plot image in base64
     ma100_ma200_plot_image = base64.b64encode(buffer.getvalue()).decode()
 
-    scaler = MinMaxScaler(feature_range = (0, 1))
+    scaler=MinMaxScaler(feature_range=(0, 1))
     data_training = pd.DataFrame(data['Close'][0:int(len(data)*0.70)])
     data_testing = pd.DataFrame(data['Close'][int(len(data)*0.70):int(len(data))])
-    data_training_array = scaler.fit_transform(data_training)
+    # data_training_array = scaler.fit_transform(data_training)
 
     model = load_model('keras_model.h5')
     past_100_days = data_training.tail(100)
