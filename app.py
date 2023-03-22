@@ -94,9 +94,8 @@ def search():
         x_test.append(input_data[i-100:i])
         y_test.append(input_data[i, 0])
 
-    x_test,y_test = np.array(x_test), np.array(y_test)
+    x_test, y_test = np.array(x_test), np.array(y_test)
     y_predict = model.predict(x_test)
-    
     scaler = scaler.scale_
 
     scale_factor = 1/scaler[0]
@@ -128,13 +127,14 @@ def search():
 
     total_dataset = pd.concat((data['Close'], test_data['Close']), axis=0)
 
-    scaler = MinMaxScaler(feature_range = (0,1))
-    model_inputs = total_dataset[len(total_dataset)-len(test_data)-prediction_days:].values
-    model_inputs = model_inputs.reshape(-1,1)
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    ln = len(total_dataset)-len(test_data)-prediction_days
+    model_inputs = total_dataset[ln:].values
+    model_inputs = model_inputs.reshape(-1, 1)
     model_inputs = scaler.fit_transform(model_inputs)
 
-
-    real_data = [model_inputs[len(model_inputs)+1-prediction_days:len(model_inputs+1), 0]]
+    ln = len(model_inputs)+1-prediction_days
+    real_data = [model_inputs[ln:len(model_inputs+1), 0]]
     real_data = np.array(real_data)
     reshape_val = (real_data.shape[0], real_data.shape[1], 1)
     real_data = np.reshape(real_data, reshape_val)
