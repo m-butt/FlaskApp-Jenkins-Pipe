@@ -2,7 +2,7 @@ name: Python Lint
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, muhammad, Mehmood ]
   pull_request:
     branches: [ main ]
 
