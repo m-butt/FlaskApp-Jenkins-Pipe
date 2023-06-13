@@ -6,3 +6,8 @@ yfinance
 scikit-learn
 tensorflow
 pandas_datareader
+black
+pylint
+pytest
+pytest-cov
+click
